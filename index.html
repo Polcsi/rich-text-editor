@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rich Text Editor</title>
+    <script src="jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="texteditor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/fontawesome.min.css" integrity="sha512-OdEXQYCOldjqUEsuMKsZRj93Ht23QRlhIb8E/X0sbwZhme8eUw6g8q7AdxGJKakcBbv7+/PX0Gc2btf7Ru8cZA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div id="container" >
+        <fieldset id="fieldset">
+            <div class="first-grid">
+                <button class="fontStyle save" onclick="saveText()" title="Save In Cookie"><i class="far fa-save"></i></button>
+                <button class="fontStyle undo-apply" onclick="Undo()" title="Undo Ctrl + Z"><i class="fas fa-undo-alt"></i></button>
+                <button class="fontStyle redo-apply" onclick="Redo()" title="Redo Ctrl + Y"><i class="fas fa-redo-alt"></i></button>
+                <button id="pin" onclick="pinNavbar()" title="Pin/Unpin Navigation"><i class="fas fa-thumbtack" id="thumback"></i></button>
+            </div>
+            <div class="font-styles-container">
+                <div class="font-styles">
+                    <div class="font-style-container">
+                        <label class="list-label" for="input-font">Font Type</label>
+                        <select id="input-font" class="input"  onchange="changeFont (this);">
+                          <option value="Arial">Arial</option>
+                          <option value="Helvetica">Helvetica</option>
+                          <option value="Times New Roman">Times New Roman</option>
+                          <option value="Sans serif">Sans serif</option>
+                          <option value="Courier New">Courier New</option>
+                          <option value="Verdana">Verdana</option>
+                          <option value="Georgia">Georgia</option>
+                          <option value="Palatino">Palatino</option>
+                          <option value="Garamond">Garamond</option>
+                          <option value="Comic Sans MS">Comic Sans MS</option>
+                          <option value="Arial Black">Arial Black</option>
+                          <option value="Tahoma">Tahoma</option>
+                          <option value="Comic Sans MS">Comic Sans MS</option>
+                        </select>
+                    </div>
+                    <div class="font-size-container">
+                        <!-- font size start -->
+                  <label class="list-label" for="fontSize">Size</label>
+                  <select id="fontSize" onclick="changeSize()">
+                    <option value="1">1</option>      
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                  </select>
+                  <!-- font size end -->
+                        <button class="fontStyle increase" onclick="document.execCommand('increaseFontSize', false, null)" title="Increase Font Size"><i class="fas fa-chevron-up"></i></button>
+                        <button class="fontStyle decrease" onclick="document.execCommand('decreaseFontSize', false, null)" title="Decrease Font Size"><i class="fas fa-chevron-down"></i></button>
+                    </div>
+                    <div class="font-color-container">
+                        <label class="list-label" for="mycolor">Color</label>
+                        <input id="myColor" class="color-apply" type="color" onclick="chooseColor()" onchange="chooseColor()"> 
+                    </div>
+                    <div class="font-background-color">
+                        <label class="list-label" for="myBackColor">Background</label>
+                        <input id="myBackColor" class="color-apply" type="color" onclick="changeBackgroundColor()" onchange="changeBackgroundColor()">
+                    </div>
+                </div>
+                <span>Font Styles</span>
+            </div>
+            <div class="navigation-buttons">
+                <button class="fontStyle italic" onclick="document.execCommand('italic',false,null);" title="Italicize Highlighted Text"><i class="fas fa-italic"></i></button>
+                <button class="fontStyle bold" onclick="document.execCommand( 'bold',false,null);" title="Bold Highlighted Text"><i class="fas fa-bold"></i></button>
+                <button class="fontStyle underline" onclick="document.execCommand( 'underline',false,null);" title="Underline Highlighted Text"><i class="fas fa-underline"></i></button>
+                <button class="fontStyle strikethrough" onclick="document.execCommand( 'strikethrough',false,null);" title="Strikethrough Highlighted Text"><i class="fas fa-strikethrough"></i></button>
+                <button class="fontStyle subscript" onclick="document.execCommand('subscript', false, null)" title="Subscript Highlighted Text"><i class="fas fa-subscript"></i></button>
+                <button class="fontStyle superscript" onclick="document.execCommand('superscript', false, null)" title="Superscript Highlighted Text"><i class="fas fa-superscript"></i></button>
+                <button class="fontStyle fill" title="Fill Background" onclick="openFill()"><i class="fas fa-fill-drip"></i></button>
+                <input class="color-apply" id="fillbackground" onclick="fillDiv()" onchange="fillDiv()" type="color" style="display: none;">
+                <button class="fontStyle blockquote" onclick="document.execCommand('formatBlock', false, '<blockquote>')" title="Blockquote"><i class="fas fa-quote-right"></i></button>
+                <button class="fontStyle indent" onclick="document.execCommand('indent', false, null)" title="Indent Highlighted Text"><i class="fas fa-indent"></i></button>
+                <button class="fontStyle outdent" onclick="document.execCommand('outdent', false, null)" title="Indent Highlighted Text"><i class="fas fa-outdent"></i></button>
+                <button class="fontStyle orderedlist" onclick="document.execCommand('insertOrderedList', false, null);" title="Insert Ordered List"><i class="fas fa-sort-numeric-down"></i></button>
+                <button class="fontStyle unorderedlist" onclick="document.execCommand('insertUnorderedList',false, null)" title="Insert Unordered List"><i class="fas fa-sort-amount-down"></i></button>  
+                <select onchange="insertHeading()" id="heading">
+                    <option value="<h1>">Heading 1</option>
+                    <option value="<h2>">Heading 2</option>
+                    <option value="<h3>">Heading 3</option>
+                    <option value="<h4>">Heading 4</option>
+                    <option value="<h5>">Heading 5</option>
+                </select>
+                <button class="fontStyle align-left" onclick="document.execCommand( 'justifyLeft',false,null);" title="Align Left"><i class="fas fa-align-left"></i></button>
+                <button class="fontStyle align-right" onclick="document.execCommand( 'justifyRight',false,null);" title="Align Right"><i class="fas fa-align-right"></i></button>
+                <button class="fontStyle align-center" onclick="document.execCommand( 'justifyCenter',false,null);" title="Align Center"><i class="fas fa-align-center"></i></button>
+                <button class="fontStyle align-justify" onclick="document.execCommand( 'justifyFull',false,null);" title="Align Justify"><i class="fas fa-align-justify"></i></button>
+                <button class="fontStyle insertlink" onclick="insertLink()" title="Create Link From Highlighted Text"><i class="fas fa-link"></i></button>
+                <input class="color-apply" onclick="addBorder()" onchange="addBorder()"  id="border-color" type="color" style="display: none;">
+                <button id="border-btn" onclick="openBorder()" title="Add Border"><i class="fas fa-border-style"></i></button>
+                <button class="fontStyle horizontalrule" onclick="document.execCommand('insertHorizontalRule', false, null)" title="Insert Horizontal Rule"><i class="fab fa-line"></i></button>
+                <button class="fontStyle codeexamplebtn" onclick="codeExampleBack('background')" title="Code Background"><i class="fas fa-laptop-code"></i></button>
+                <button class="fontStyle codebtn" onclick="codeExampleBack('code')" title="Insert Code Tag"><i class="fas fa-code"></i></button>
+                <button class="fontStyle notify" onclick="addNote()" title="Add Note Element"><i class="fas fa-sticky-note"></i></button>
+                <button class="fontStyle warnbtn" onclick="addWarn()" title="Add Warn Element"><i class="fas fa-exclamation-triangle"></i></button>
+                <button class="fontStyle remove-format" onclick="removeFormat()" title="Remove All Format"><i class="fas fa-remove-format"></i></button>  
+                <button class="fontStyle delete" onclick="torles()" title="Delete Highlighted Text"><i class="fas fa-trash"></i></button> 
+            </div>
+            <details id="objectalign" title="Align Object">
+                <summary><i class="far fa-object-group"></i></summary>
+                <button onclick="resizeImage('left')" title="Align Left">Left</button>
+                <button onclick="resizeImage('center')" title="Align Center">Center</button>
+                <button onclick="resizeImage('right')" title="Align Right">Right</button>
+            </details>
+            <div class="objectsizing-container">
+                <label id="widthlabel" for="objectwidth">Width</label>
+                <select id="objectwidth">
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100%">100%</option>
+                </select>
+            </div>
+            <div class="insertimage-container">
+                <label for="imagepath">Insert Image</label>
+                <input id="imagepath" type="text" placeholder="Type image url">
+                <button class="fontStyle insert-image" onclick="insertImage()">Insert</button>
+            </div>
+        </fieldset>
+    
+      <div id="editor1" contenteditable="true" data-text="Type something..."></div>
+    </div>
+
+    <script src="texteditor-app.js"></script>
+</body>
+</html>
